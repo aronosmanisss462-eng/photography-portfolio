@@ -1,0 +1,7 @@
+node_modules/
+*.docx
+*.md
+generate-photos.js
+screenshot*.png
+.DS_Store
+photos/视频作品集.mp4

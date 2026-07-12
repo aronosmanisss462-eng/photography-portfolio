@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《爱尔兰人》人物关系图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a1a;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .chart {
+    background: #fffef7;
+    border: 1px solid #d0cbc0;
+    border-radius: 6px;
+    padding: 48px 40px 36px;
+    max-width: 900px;
+    width: 100%;
+    box-shadow: 0 4px 24px rgba(0,0,0,.3);
+  }
+  h1 {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  .sub {
+    text-align: center;
+    font-size: 15px;
+    color: #b71c1c;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+  }
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .row {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px dashed #d9d3c5;
+    padding-bottom: 10px;
+  }
+  .row:last-child { border-bottom: none; }
+  .tag {
+    flex: 0 0 130px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #b71c1c;
+    padding-top: 2px;
+  }
+  .tag.central { color: #1a1a1a; font-size: 15px; }
+  .desc { flex: 1; font-size: 14px; color: #333; line-height: 1.7; }
+  .desc em { font-style: normal; background: #fdf0e6; padding: 1px 5px; border-radius: 2px; }
+  .arrow-block {
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: #faf6f0;
+    border-left: 3px solid #b71c1c;
+    border-radius: 2px;
+  }
+  .arrow-block .line {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.8;
+  }
+  .arrow-block .line strong { color: #b71c1c; }
+  .note {
+    margin-top: 28px;
+    font-size: 13px;
+    color: #888;
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="chart">
+  <h1>《爱尔兰人》· 人物关系图</h1>
+  <p class="sub">The Irishman &nbsp;|&nbsp; Martin Scorsese &nbsp;|&nbsp; 2019</p>
+
+  <div class="grid">
+
+    <!-- Frank -->
+    <div class="row">
+      <div class="tag central">Frank Sheeran<br><span style="font-weight:400;font-size:12px;color:#888;">弗兰克·希兰</span></div>
+      <div class="desc"><b>主角 / 叙事者</b>。爱尔兰裔二战老兵，退伍后当上<em>肉类配送司机</em>，靠偷肉卖给黑帮赚外快。一次卡车抛锚让他结识了黑手党大佬 Russell Bufalino，从此被一步步带入黑帮世界，成为最可靠的"油漆工"（杀手）。</div>
+    </div>
+
+    <!-- Russell -->
+    <div class="row">
+      <div class="tag">Russell Bufalino<br><span style="font-weight:400;font-size:12px;color:#888;">罗素·布法利诺</span></div>
+      <div class="desc"><b>黑手党教父 /  Mentor</b>。宾州布法利诺家族的首领，为人低调、精于算计。他发现并培养了 Frank，视其为左膀右臂。<em>正是他下令让 Frank 杀死霍法</em>——在忠诚与友谊之间，Frank 选择了忠诚。</div>
+    </div>
+
+    <!-- Jimmy Hoffa -->
+    <div class="row">
+      <div class="tag">Jimmy Hoffa<br><span style="font-weight:400;font-size:12px;color:#888;">吉米·霍法</span></div>
+      <div class="desc"><b>卡车司机工会主席 /  最好的朋友</b>。强势、有魅力、固执。他和 Frank 情同手足，Frank 不仅是他的保镖，更是他唯一信任的人。但霍法与黑手党的矛盾不断激化……<em>最终 Frank 亲手枪杀了这位最好的朋友</em>，成为全片最令人心碎的一幕。</div>
+    </div>
+
+    <!-- Peggy -->
+    <div class="row">
+      <div class="tag">Peggy Sheeran<br><span style="font-weight:400;font-size:12px;color:#888;">佩姬·希兰</span></div>
+      <div class="desc"><b>Frank 的女儿 /  道德审判者</b>。从小敏锐地察觉到父亲身上沾染的黑暗。她亲眼看着父亲一步步沦为杀人机器，最终与他彻底决裂——<em>至死不肯再见 Frank 一面</em>，是 Frank 一生代价的沉默见证。</div>
+    </div>
+
+    <!-- Bill Bufalino -->
+    <div class="row">
+      <div class="tag">Bill Bufalino<br><span style="font-weight:400;font-size:12px;color:#888;">比尔·布法利诺</span></div>
+      <div class="desc"><b>工会律师 /  桥梁</b>。Russell 的堂弟，同时也是卡车司机工会的法律顾问。他两头穿针引线，是黑手党与霍法之间的联络缓冲带。</div>
+    </div>
+
+    <!-- Tony Pro -->
+    <div class="row">
+      <div class="tag">"Tony Pro"<br><span style="font-weight:400;font-size:12px;color:#888;">"托尼·普罗"</span></div>
+      <div class="desc"><b>霍法的死对头</b>。卡车司机工会内部的竞争者，公开与霍法争夺权力，多次发生正面冲突，是霍法与黑手党关系破裂的加速器。</div>
+    </div>
+
+    <!-- Angelo Bruno -->
+    <div class="row">
+      <div class="tag">Angelo Bruno<br><span style="font-weight:400;font-size:12px;color:#888;">安杰洛·布鲁诺</span></div>
+      <div class="desc"><b>费城黑手党教父</b>，与 Russell 同辈的"委员会"成员。在是否除掉霍法的问题上，他与 Russell 等人最终达成了共识。</div>
+    </div>
+
+  </div>
+
+  <div class="arrow-block">
+    <div class="line"><strong>核心关系链：</strong></div>
+    <div class="line">Frank 卖肉 → 认识 Russell → 进入黑帮 → 被派去保护霍法 → 与霍法成为挚友 → 霍法与黑手党反目 → Russell 下令 → <strong>Frank 亲手杀死霍法</strong> → 晚年孤独终老</div>
+  </div>
+
+  <p class="note">"我听到一声枪响，然后一切都安静了。" —— Frank Sheeran<br>Frank 杀死霍法，也杀死了自己仅存的人性。</p>
+</div>
+</body>
+</html>

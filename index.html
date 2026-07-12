@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AngLeeeee 摄影作品集">
+  <title>AngLeeeee | 摄影作品集</title>
+  <script src="config.js"></script>
+  <script src="photos-data.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #141414;
+      --bg-secondary: #181818;
+      --bg-card: #1a1a1a;
+      --bg-nav-solid: rgba(20, 20, 20, 0.95);
+      --text-primary: #e5e5e5;
+      --text-secondary: #b3b3b3;
+      --text-muted: #808080;
+      --accent: #e50914;
+      --accent-hover: #f40612;
+      --transition-speed: 0.3s;
+      --max-width: 1400px;
+      --nav-height: 68px;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================
+       NAVBAR
+       ============================================ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--nav-height);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 4%;
+      transition: background-color 0.4s ease, backdrop-filter 0.4s ease;
+    }
+    .navbar.scrolled {
+      background-color: var(--bg-nav-solid);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .nav-logo {
+      font-size: 1.5rem; font-weight: 900; letter-spacing: 1px;
+      color: var(--accent); text-decoration: none;
+      transition: color var(--transition-speed);
+    }
+    .nav-logo:hover { color: var(--accent-hover); }
+    .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--text-primary); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px;
+      transition: color var(--transition-speed); position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background-color: var(--accent);
+      transition: width var(--transition-speed);
+    }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .nav-hamburger span {
+      width: 24px; height: 2px; background-color: var(--text-primary);
+      transition: all var(--transition-speed);
+    }
+
+    /* ============================================
+       HERO
+       ============================================ */
+    .hero {
+      position: relative; height: 100vh; min-height: 600px;
+      display: flex; align-items: center; justify-content: center;
+      background: center/cover no-repeat;
+      background-attachment: fixed;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0.4) 40%, rgba(20,20,20,0.1) 70%, rgba(20,20,20,0.3) 100%);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative; z-index: 2; text-align: center;
+      max-width: 900px; padding: 0 2rem;
+      animation: fadeInUp 1s ease-out;
+    }
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
+      letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 1.5rem;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+    .hero-content .hero-subtitle {
+      font-size: clamp(0.9rem, 1.4vw, 1rem);
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+      font-weight: 400; letter-spacing: 5px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+    }
+    .hero-content .tagline {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: var(--text-secondary); margin-bottom: 2.5rem;
+      font-weight: 300; letter-spacing: 1px;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2.5rem; background-color: var(--accent);
+      color: #fff; text-decoration: none; font-size: 1.05rem;
+      font-weight: 600; border-radius: 4px; letter-spacing: 0.5px;
+      transition: background-color var(--transition-speed), transform var(--transition-speed);
+    }
+    .hero-cta:hover { background-color: var(--accent-hover); transform: scale(1.05); }
+    .hero-scroll-indicator {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; animation: bounceDown 2s ease-in-out infinite;
+    }
+    .hero-scroll-indicator svg { width: 28px; height: 28px; stroke: var(--text-primary); opacity: 0.6; }
+
+    /* ============================================
+       GALLERY SECTION
+       ============================================ */
+    .gallery-section { padding: 3rem 0 1rem; margin-top: -60px; position: relative; z-index: 3; }
+    .gallery-category {
+      margin-bottom: 3.5rem;
+      content-visibility: auto;
+      contain-intrinsic-size: 0 320px;
+    }
+    .gallery-category.visible-cat { content-visibility: visible; }
+
+    .category-header {
+      display: flex; align-items: baseline; gap: 1rem;
+      padding: 0 4%; margin-bottom: 1.2rem;
+    }
+    .category-title {
+      font-size: 1.6rem; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--text-primary); white-space: nowrap;
+      cursor: pointer; transition: color var(--transition-speed);
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      text-decoration: none;
+    }
+    .category-title:hover { color: #fff; }
+    .category-title .browse-hint {
+      font-size: 0.8rem; font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      opacity: 0.8;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .category-title:hover .browse-hint { opacity: 1; transform: translateX(3px); }
+    .category-count { font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.5px; }
+
+    /* ── Row with scroll indicators ── */
+    .row-container { position: relative; padding: 0 4%; }
+    .row-scroll-wrapper { position: relative; }
+
+    .row-scroll {
+      display: flex; gap: 0.5rem; overflow-x: auto; overflow-y: visible;
+      scroll-behavior: smooth; padding: 0.5rem 0 1.5rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.15) transparent;
+    }
+    .row-scroll::-webkit-scrollbar { height: 5px; }
+    .row-scroll::-webkit-scrollbar-track { background: transparent; margin: 0 40px; }
+    .row-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    .row-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
+
+    /* Scroll arrow buttons */
+    .scroll-arrow {
+      position: absolute; top: 0; bottom: 1.5rem; width: 50px;
+      z-index: 5; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s ease;
+      background: transparent;
+    }
+    .scroll-arrow.prev { left: 0; background: linear-gradient(to right, rgba(20,20,20,0.9), transparent); }
+    .scroll-arrow.next { right: 0; background: linear-gradient(to left, rgba(20,20,20,0.9), transparent); }
+    .scroll-arrow svg { width: 28px; height: 28px; stroke: #fff; opacity: 0.8; transition: opacity 0.2s, transform 0.2s; }
+    .scroll-arrow:hover svg { opacity: 1; }
+    .scroll-arrow.prev:hover svg { transform: translateX(-3px); }
+    .scroll-arrow.next:hover svg { transform: translateX(3px); }
+    .row-scroll-wrapper:hover .scroll-arrow { opacity: 1; }
+    .row-scroll-wrapper:hover .scroll-arrow.hidden { opacity: 0; pointer-events: none; }
+    /* Always show arrows on touch devices */
+    @media (hover: none) { .scroll-arrow { opacity: 0.6; } }
+
+    /* ============================================
+       PHOTO CARDS
+       ============================================ */
+    .card {
+      flex: 0 0 280px; height: 190px; border-radius: 4px;
+      overflow: hidden; cursor: pointer; position: relative;
+      transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      scroll-snap-align: start; background-color: var(--bg-card);
+    }
+    .card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .card:hover { transform: scale(1.08); z-index: 10; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+    .card:hover img { transform: scale(1.1); }
+    .card-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.2rem 1rem 0.8rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+      transform: translateY(40%);
+      transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .card:hover .card-info { transform: translateY(0); }
+    .card-info h3 {
+      font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-info .card-meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem; }
+    .card-info .card-meta .badge {
+      display: inline-block; padding: 2px 8px; font-size: 0.7rem;
+      font-weight: 600; letter-spacing: 0.5px; border-radius: 2px;
+      background-color: var(--accent); color: #fff; text-transform: uppercase;
+    }
+    .card:first-child { flex: 0 0 420px; height: 280px; }
+
+    /* ============================================
+       VIDEO SECTION
+       ============================================ */
+    .video-section {
+      padding: 1rem 4% 3rem;
+      position: relative; z-index: 3;
+    }
+    .video-container {
+      max-width: 1000px; margin: 0 auto;
+      position: relative; border-radius: 6px; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      background: #000;
+    }
+    .video-container video {
+      width: 100%; display: block;
+      max-height: 70vh;
+    }
+    .video-info {
+      padding: 1.5rem 0 0.5rem; max-width: 1000px; margin: 0 auto;
+    }
+    .video-info h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .video-info p { color: var(--text-secondary); font-size: 0.95rem; }
+
+    /* ============================================
+       ABOUT SECTION
+       ============================================ */
+    .about-section { padding: 6rem 4%; background-color: var(--bg-secondary); }
+    .about-container {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: 320px 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .about-image {
+      width: 100%; aspect-ratio: 1 / 1; border-radius: 4px;
+      overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+    .about-image img { width: 100%; height: 100%; object-fit: cover; }
+    .about-text h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: 0.5px; }
+    .about-text .about-subtitle {
+      font-size: 1rem; color: var(--accent); font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.2rem;
+    }
+    .about-text p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.9; margin-bottom: 1rem; white-space: pre-line; }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer { padding: 4rem 4% 2rem; background-color: var(--bg-primary); border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-content {
+      max-width: var(--max-width); margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 3rem; margin-bottom: 3rem;
+    }
+    .footer-col h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1.2rem; letter-spacing: 0.5px; }
+    .footer-col p, .footer-col a {
+      color: var(--text-muted); font-size: 0.9rem; text-decoration: none;
+      display: block; margin-bottom: 0.6rem;
+      transition: color var(--transition-speed); line-height: 1.8;
+    }
+    .footer-col a:hover { color: var(--text-primary); }
+    .footer-col a.service-link { cursor: pointer; color: var(--text-muted); }
+    .footer-col a.service-link:hover { color: var(--accent); }
+    .social-links { display: flex; gap: 1.2rem; margin-top: 0.5rem; }
+    .social-links a {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition-speed);
+    }
+    .social-links a:hover { border-color: var(--accent); background-color: var(--accent); }
+    .social-links svg { width: 18px; height: 18px; fill: var(--text-muted); transition: fill var(--transition-speed); }
+    .social-links a:hover svg { fill: #fff; }
+    .footer-bottom {
+      max-width: var(--max-width); margin: 0 auto; padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+
+    /* ============================================
+       LIGHTBOX
+       ============================================ */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 9999;
+      background-color: rgba(0,0,0,0.96);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .lightbox.open { opacity: 1; pointer-events: auto; }
+    .lightbox-image-wrapper {
+      position: relative; max-width: 90vw; max-height: 85vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lightbox img {
+      max-width: 90vw; max-height: 85vh; object-fit: contain;
+      border-radius: 2px; box-shadow: 0 4px 60px rgba(0,0,0,0.5);
+      opacity: 0; transform: scale(0.95);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .lightbox.open img { opacity: 1; transform: scale(1); }
+    .lightbox-caption {
+      position: absolute; bottom: -3rem; left: 0; right: 0;
+      text-align: center; color: var(--text-secondary); font-size: 0.95rem;
+    }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      width: 44px; height: 44px; background: none; border: none;
+      cursor: pointer; z-index: 10; display: flex; align-items: center;
+      justify-content: center; border-radius: 50%;
+      transition: background-color var(--transition-speed);
+    }
+    .lightbox-close:hover { background-color: rgba(255,255,255,0.1); }
+    .lightbox-close::before, .lightbox-close::after {
+      content: ''; position: absolute; width: 24px; height: 2px; background-color: #fff;
+    }
+    .lightbox-close::before { transform: rotate(45deg); }
+    .lightbox-close::after { transform: rotate(-45deg); }
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 50px; height: 80px; background: rgba(0,0,0,0.5);
+      border: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; border-radius: 4px; color: #fff;
+      font-size: 1.5rem; transition: background-color var(--transition-speed); z-index: 10;
+    }
+    .lightbox-nav:hover { background: rgba(0,0,0,0.8); }
+    .lightbox-prev { left: 1rem; }
+    .lightbox-next { right: 1rem; }
+    .lightbox-counter {
+      position: absolute; top: 1.5rem; left: 50%; transform: translateX(-50%);
+      color: var(--text-muted); font-size: 0.85rem; letter-spacing: 1px;
+    }
+
+    /* ============================================
+       CATEGORY GRID OVERLAY
+       ============================================ */
+    .grid-overlay {
+      position: fixed; inset: 0; z-index: 8000;
+      background-color: var(--bg-primary);
+      overflow-y: auto;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .grid-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .grid-header {
+      position: sticky; top: 0; z-index: 10;
+      background: linear-gradient(to bottom, var(--bg-primary) 60%, transparent);
+      padding: 2rem 4% 1.5rem;
+      display: flex; align-items: center; gap: 1.5rem;
+    }
+    .grid-back {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.5);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition-speed);
+      flex-shrink: 0;
+    }
+    .grid-back:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
+    .grid-back svg { width: 20px; height: 20px; stroke: #fff; stroke-width: 2; }
+    .grid-header h2 { font-size: 2rem; font-weight: 700; }
+
+    .grid-photos {
+      padding: 0 4% 4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .grid-card {
+      position: relative; border-radius: 4px; overflow: hidden;
+      cursor: pointer; aspect-ratio: 4/3;
+      background-color: var(--bg-card);
+      transition: transform 0.3s ease;
+    }
+    .grid-card:hover { transform: scale(1.03); z-index: 5; }
+    .grid-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .grid-card:hover img { transform: scale(1.08); }
+    .grid-card .grid-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+      opacity: 0; transition: opacity 0.3s ease;
+      display: flex; align-items: flex-end; padding: 1rem;
+    }
+    .grid-card:hover .grid-card-overlay { opacity: 1; }
+    .grid-card-overlay span {
+      font-size: 0.95rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ============================================
+       TOAST
+       ============================================ */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      z-index: 10000;
+      background: rgba(30,30,30,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+    /* ============================================
+       ANIMATIONS
+       ============================================ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounceDown {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(10px); }
+      60% { transform: translateX(-50%) translateY(5px); }
+    }
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 1024px) {
+      .card { flex: 0 0 220px; height: 150px; }
+      .card:first-child { flex: 0 0 320px; height: 210px; }
+      .about-container { gap: 2.5rem; }
+      .grid-photos { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    }
+    @media (max-width: 768px) {
+      :root { --nav-height: 60px; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .hero { background-attachment: scroll; min-height: 500px; }
+      .hero-content h1 { font-size: 2rem; }
+      .card { flex: 0 0 200px; height: 140px; }
+      .card:first-child { flex: 0 0 280px; height: 190px; }
+      .category-title { font-size: 1.3rem; }
+      .browse-hint { font-size: 0.7rem; }
+      .scroll-arrow { display: none; }
+      .about-container { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+      .about-image { max-width: 250px; margin: 0 auto; }
+      .footer-content { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .lightbox-nav { width: 40px; height: 60px; }
+      .grid-header h2 { font-size: 1.5rem; }
+      .grid-photos { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.6rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-content h1 { font-size: 1.7rem; }
+      .hero-content .tagline { font-size: 0.9rem; }
+      .hero-cta { padding: 0.7rem 1.8rem; font-size: 0.9rem; }
+      .card { flex: 0 0 170px; height: 120px; }
+      .card:first-child { flex: 0 0 230px; height: 160px; }
+      .category-title { font-size: 1.1rem; }
+      .category-title .browse-hint { font-size: 0.65rem; }
+      .gallery-category { margin-bottom: 2rem; }
+      .footer-content { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      .lightbox-close { top: 0.8rem; right: 1rem; }
+      .lightbox-counter { top: 1rem; font-size: 0.75rem; left: 1rem; transform: none; }
+      .grid-photos { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.5rem; }
+      .video-section { padding: 1rem 2% 2rem; }
+    }
+    .nav-links.mobile-open {
+      display: flex; flex-direction: column;
+      position: absolute; top: var(--nav-height); left: 0; right: 0;
+      background-color: var(--bg-nav-solid);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      padding: 1.5rem 4%; gap: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-links.mobile-open a { font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a href="#" class="nav-logo" id="navLogo"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#gallery" class="active">作品集</a></li>
+      <li><a href="#video-section">视频</a></li>
+      <li><a href="#about">关于我</a></li>
+      <li><a href="#contact">联系方式</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <p class="hero-subtitle" id="heroSubtitle"></p>
+      <h1 id="heroTitle"></h1>
+      <a href="#gallery" class="hero-cta" id="heroCta"></a>
+    </div>
+    <div class="hero-scroll-indicator">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery-section" id="gallery"></section>
+
+  <!-- VIDEO SECTION -->
+  <section class="video-section fade-in" id="video-section">
+    <div class="category-header" style="padding:0; margin-bottom:1.2rem;">
+      <h2 class="category-title" style="cursor:default;">视频作品</h2>
+      <span class="category-count">1 部作品</span>
+    </div>
+    <div class="video-container" id="videoContainer"></div>
+    <div class="video-info">
+      <h3 id="videoTitle"></h3>
+      <p id="videoDesc"></p>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section fade-in" id="about">
+    <div class="about-container">
+      <div class="about-image">
+        <img src="" alt="AngLeeeee" id="aboutImg" loading="lazy">
+      </div>
+      <div class="about-text">
+        <p class="about-subtitle" id="aboutLabel"></p>
+        <h2 id="aboutTitle"></h2>
+        <p id="aboutBio"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="contact">
+    <div class="footer-content">
+      <div class="footer-col">
+        <h3>联系方式</h3>
+        <p id="footerLocation"></p>
+        <p id="footerEmail"></p>
+      </div>
+      <div class="footer-col">
+        <h3>服务项目</h3>
+        <div id="footerServices"></div>
+      </div>
+      <div class="footer-col">
+        <h3>关注我</h3>
+        <div class="social-links" id="footerSocial"></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="footerCopy"></span>
+      <span>Designed with passion for photography</span>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="关闭"></button>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="上一张">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="下一张">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="lightbox-image-wrapper">
+      <img src="" alt="" id="lightboxImg">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <!-- CATEGORY GRID OVERLAY -->
+  <div class="grid-overlay" id="gridOverlay">
+    <div class="grid-header">
+      <button class="grid-back" id="gridBack" aria-label="返回">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2 id="gridTitle"></h2>
+    </div>
+    <div class="grid-photos" id="gridPhotos"></div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- SCRIPTS -->
+  <script>
+    (function() {
+      'use strict';
+
+      function waitFor(fn) {
+        if (typeof CONFIG !== 'undefined' && typeof PHOTOS_DATA !== 'undefined') { fn(); return; }
+        setTimeout(() => waitFor(fn), 50);
+      }
+
+      waitFor(function() {
+        const C = CONFIG;
+
+        // ── Navbar ──────────────────────────────
+        document.getElementById('navLogo').textContent = C.名字;
+
+        // ── Hero ────────────────────────────────
+        document.querySelector('.hero').style.backgroundImage = `url('${C.首页大图}')`;
+        document.getElementById('heroSubtitle').textContent = C.首页副标题 || C.名字;
+        document.getElementById('heroTitle').textContent = C.标语;
+        document.getElementById('heroCta').textContent = C.按钮文字;
+        document.title = C.名字 + ' | 摄影作品集';
+
+        // ── Gallery ─────────────────────────────
+        const galleryEl = document.getElementById('gallery');
+        const allCardsData = [];
+        const catOrder = ['风光', '人物', '街拍', '体育', '宠物', '手机'];
+        const photoData = typeof PHOTOS_DATA !== 'undefined' ? PHOTOS_DATA : {};
+
+        // Intersection Observer for category lazy rendering
+        const catObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible-cat');
+              catObserver.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '400px 0px' });
+
+        catOrder.forEach(catKey => {
+          const cat = photoData[catKey];
+          if (!cat || !cat.照片列表 || cat.照片列表.length === 0) return;
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'gallery-category fade-in';
+          catObserver.observe(wrapper);
+
+          const header = document.createElement('div');
+          header.className = 'category-header';
+          header.innerHTML = `
+            <h2 class="category-title" data-category="${catKey}">
+              ${cat.分类名}
+              <span class="browse-hint">浏览全部 &rsaquo;</span>
+            </h2>
+            <span class="category-count">${cat.照片列表.length} 张作品</span>`;
+          wrapper.appendChild(header);
+
+          const rowWrapper = document.createElement('div');
+          rowWrapper.className = 'row-scroll-wrapper';
+
+          const rowScroll = document.createElement('div');
+          rowScroll.className = 'row-scroll';
+          rowScroll.dataset.category = catKey;
+
+          cat.照片列表.forEach((photo, i) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.src = photo.文件;
+            card.dataset.title = photo.标题;
+            card.dataset.category = cat.分类名;
+            card.dataset.catKey = catKey;
+            card.dataset.meta = [photo.相机, photo.参数].filter(Boolean).join(' | ') || cat.分类名;
+
+            const img = document.createElement('img');
+            // Only load first 6 images eagerly per row, rest lazy
+            img.loading = (i < 6) ? 'eager' : 'lazy';
+            img.decoding = 'async';
+            img.src = photo.文件;
+            img.alt = photo.标题;
+
+            const info = document.createElement('div');
+            info.className = 'card-info';
+            info.innerHTML = `<h3>${photo.标题}</h3><div class="card-meta"><span class="badge">${cat.分类名}</span> ${photo.相机 || ''}</div>`;
+
+            card.appendChild(img);
+            card.appendChild(info);
+            rowScroll.appendChild(card);
+            allCardsData.push(card);
+          });
+
+          // Scroll arrows
+          const prevBtn = document.createElement('button');
+          prevBtn.className = 'scroll-arrow prev';
+          prevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>';
+          prevBtn.addEventListener('click', () => rowScroll.scrollBy({ left: -600, behavior: 'smooth' }));
+
+          const nextBtn = document.createElement('button');
+          nextBtn.className = 'scroll-arrow next';
+          nextBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+          nextBtn.addEventListener('click', () => rowScroll.scrollBy({ left: 600, behavior: 'smooth' }));
+
+          function updateArrows() {
+            var atStart = rowScroll.scrollLeft <= 5;
+            var atEnd = rowScroll.scrollLeft + rowScroll.clientWidth >= rowScroll.scrollWidth - 5;
+            prevBtn.classList.toggle('hidden', atStart);
+            nextBtn.classList.toggle('hidden', atEnd);
+          }
+          rowScroll.addEventListener('scroll', updateArrows, { passive: true });
+          setTimeout(updateArrows, 500);
+          window.addEventListener('resize', updateArrows);
+
+          rowWrapper.appendChild(prevBtn);
+          rowWrapper.appendChild(nextBtn);
+          rowWrapper.appendChild(rowScroll);
+
+          var rowContainer = document.createElement('div');
+          rowContainer.className = 'row-container';
+          rowContainer.appendChild(rowWrapper);
+          wrapper.appendChild(rowContainer);
+          galleryEl.appendChild(wrapper);
+        });
+
+        // ── Category title click -> Grid ───────
+        const gridOverlay = document.getElementById('gridOverlay');
+        const gridTitle = document.getElementById('gridTitle');
+        const gridPhotosEl = document.getElementById('gridPhotos');
+        const gridBack = document.getElementById('gridBack');
+
+        function openGrid(catKey) {
+          const cat = photoData[catKey];
+          if (!cat) return;
+          gridTitle.textContent = cat.分类名;
+          gridPhotosEl.innerHTML = '';
+
+          cat.照片列表.forEach(photo => {
+            const gridCard = document.createElement('div');
+            gridCard.className = 'grid-card';
+            gridCard.dataset.src = photo.文件;
+            gridCard.dataset.title = photo.标题;
+            gridCard.dataset.category = cat.分类名;
+            gridCard.dataset.meta = [photo.相机, photo.参数].filter(Boolean).join(' | ') || cat.分类名;
+            gridCard.innerHTML = `
+              <img src="${photo.文件}" alt="${photo.标题}" loading="lazy" decoding="async">
+              <div class="grid-card-overlay"><span>${photo.标题}</span></div>
+            `;
+            gridPhotosEl.appendChild(gridCard);
+          });
+
+          gridOverlay.classList.add('open');
+          document.body.style.overflow = 'hidden';
+          gridOverlay.scrollTop = 0;
+        }
+
+        function closeGrid() {
+          gridOverlay.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+
+        gridBack.addEventListener('click', closeGrid);
+        document.addEventListener('keydown', function(e) {
+          if (gridOverlay.classList.contains('open') && e.key === 'Escape') closeGrid();
+        });
+
+        galleryEl.addEventListener('click', function(e) {
+          var title = e.target.closest('.category-title');
+          if (!title || !title.dataset.category) return;
+          openGrid(title.dataset.category);
+        });
+
+        // Grid card click -> lightbox
+        gridPhotosEl.addEventListener('click', function(e) {
+          var gridCard = e.target.closest('.grid-card');
+          if (!gridCard) return;
+          var allGridCards = Array.from(gridPhotosEl.querySelectorAll('.grid-card'));
+          var idx = allGridCards.indexOf(gridCard);
+          if (idx !== -1) openLightboxFromArray(allGridCards.map(function(c) {
+            return { src: c.dataset.src, title: c.dataset.title, category: c.dataset.category, meta: c.dataset.meta };
+          }), idx);
+        });
+
+        // ── Video section ───────────────────────
+        if (C.视频作品 && C.视频作品.文件) {
+          var vid = C.视频作品;
+          var videoEl = document.createElement('video');
+          videoEl.controls = true;
+          videoEl.preload = 'metadata';
+          videoEl.innerHTML = '<source src="' + vid.文件 + '" type="video/mp4">您的浏览器不支持视频播放';
+
+          // Auto-capture poster frame
+          videoEl.addEventListener('loadedmetadata', function() {
+            // Seek to 1 second or 10% of duration
+            var seekTime = Math.min(1, videoEl.duration * 0.1);
+            videoEl.currentTime = seekTime;
+          });
+
+          videoEl.addEventListener('seeked', function captureFrame() {
+            if (videoEl.poster) return; // already captured
+            try {
+              var canvas = document.createElement('canvas');
+              canvas.width = videoEl.videoWidth || 1280;
+              canvas.height = videoEl.videoHeight || 720;
+              var ctx = canvas.getContext('2d');
+              ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+              videoEl.poster = canvas.toDataURL('image/jpeg', 0.8);
+              canvas.remove();
+            } catch(e) {
+              // fallback: no poster
+            }
+            videoEl.removeEventListener('seeked', captureFrame);
+          });
+
+          document.getElementById('videoContainer').appendChild(videoEl);
+          document.getElementById('videoTitle').textContent = vid.标题;
+          document.getElementById('videoDesc').textContent = vid.描述;
+        }
+
+        // ── About ───────────────────────────────
+        document.getElementById('aboutImg').src = C.头像照片;
+        document.getElementById('aboutLabel').textContent = C.关于我标签;
+        document.getElementById('aboutTitle').textContent = C.关于我标题;
+        document.getElementById('aboutBio').textContent = C.关于我简介;
+
+        // ── Footer ──────────────────────────────
+        document.getElementById('footerLocation').textContent = C.地点;
+        document.getElementById('footerEmail').textContent = C.邮箱;
+        document.getElementById('footerCopy').textContent = '© ' + new Date().getFullYear() + ' ' + C.名字 + '. All rights reserved.';
+
+        // Service items -> click -> toast
+        var servicesHTML = C.服务项目.map(function(s) {
+          return '<a class="service-link" data-service="' + s + '">' + s + '</a>';
+        }).join('');
+        document.getElementById('footerServices').innerHTML = servicesHTML;
+
+        var toast = document.getElementById('toast');
+        var toastTimer;
+
+        document.getElementById('footerServices').addEventListener('click', function(e) {
+          var link = e.target.closest('.service-link');
+          if (!link) return;
+          var service = link.dataset.service;
+          toast.innerHTML = '<em>' + service + '</em> 相关咨询请发送邮件至 <em>' + C.邮箱 + '</em>';
+          toast.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3500);
+        });
+
+        // Social links
+        var socialIcons = {
+          Instagram: '<svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>',
+          小红书: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+          微博: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 4.6 6 5.4 10.2 3.2C14.6 3.3 20 1 22 4z"/></svg>',
+          图库: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>',
+        };
+        var socialHTML = Object.keys(C.社交链接).map(function(name) {
+          var url = C.社交链接[name] || '#';
+          return '<a href="' + url + '" aria-label="' + name + '">' + (socialIcons[name] || '') + '</a>';
+        }).join('');
+        document.getElementById('footerSocial').innerHTML = socialHTML;
+
+        // ── Lightbox ────────────────────────────
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+        const lightboxCounter = document.getElementById('lightboxCounter');
+        let currentGallery = [], currentIndex = -1;
+
+        function openLightboxFromArray(gallery, index) {
+          currentGallery = gallery;
+          currentIndex = index;
+          renderLightboxImage();
+          lightbox.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function openLightbox(cards, index) {
+          openLightboxFromArray(cards.map(function(card) {
+            return { src: card.dataset.src, title: card.dataset.title || '', category: card.dataset.category || '', meta: card.dataset.meta || '' };
+          }), index);
+        }
+
+        function closeLightbox() {
+          lightbox.classList.remove('open');
+          document.body.style.overflow = '';
+          currentGallery = []; currentIndex = -1;
+        }
+
+        function renderLightboxImage() {
+          if (currentIndex < 0 || currentIndex >= currentGallery.length) return;
+          const item = currentGallery[currentIndex];
+          lightboxImg.style.opacity = '0';
+          lightboxImg.style.transform = 'scale(0.95)';
+          setTimeout(function() {
+            lightboxImg.src = item.src;
+            lightboxImg.alt = item.title;
+            lightboxCaption.textContent = item.title + ' | ' + item.meta;
+            lightboxCounter.textContent = (currentIndex + 1) + ' / ' + currentGallery.length;
+            lightboxImg.style.opacity = '1';
+            lightboxImg.style.transform = 'scale(1)';
+          }, 150);
+        }
+
+        function navigateLightbox(dir) {
+          if (currentGallery.length === 0) return;
+          currentIndex = (currentIndex + dir + currentGallery.length) % currentGallery.length;
+          renderLightboxImage();
+        }
+
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.getElementById('lightboxPrev').addEventListener('click', function() { navigateLightbox(-1); });
+        document.getElementById('lightboxNext').addEventListener('click', function() { navigateLightbox(1); });
+        lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+
+        document.addEventListener('keydown', function(e) {
+          if (gridOverlay.classList.contains('open')) return;
+          if (!lightbox.classList.contains('open')) return;
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowLeft') navigateLightbox(-1);
+          if (e.key === 'ArrowRight') navigateLightbox(1);
+        });
+
+        let touchX = 0;
+        lightbox.addEventListener('touchstart', function(e) { touchX = e.changedTouches[0].screenX; }, { passive: true });
+        lightbox.addEventListener('touchend', function(e) {
+          if (Math.abs(touchX - e.changedTouches[0].screenX) > 50) navigateLightbox(touchX - e.changedTouches[0].screenX > 0 ? 1 : -1);
+        });
+
+        // Card click -> lightbox
+        galleryEl.addEventListener('click', function(e) {
+          var card = e.target.closest('.card[data-src]');
+          if (!card) return;
+          if (e.target.closest('.category-title')) return;
+          var allCards = Array.from(document.querySelectorAll('#gallery .card[data-src]'));
+          var idx = allCards.indexOf(card);
+          if (idx !== -1) openLightbox(allCards, idx);
+        });
+
+        // ── Nav scroll effect ───────────────────
+        var scrollTicking = false;
+        function onScroll() {
+          if (!scrollTicking) {
+            requestAnimationFrame(function() {
+              document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+              scrollTicking = false;
+            });
+            scrollTicking = true;
+          }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        // ── Mobile menu ─────────────────────────
+        document.getElementById('hamburger').addEventListener('click', function() {
+          document.getElementById('navLinks').classList.toggle('mobile-open');
+        });
+        document.querySelectorAll('#navLinks a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            document.getElementById('navLinks').classList.remove('mobile-open');
+          });
+        });
+
+        // ── Active nav link ─────────────────────
+        const sections = document.querySelectorAll('section[id]');
+        const navAnchors = document.querySelectorAll('#navLinks a');
+        window.addEventListener('scroll', function() {
+          let currentId = '';
+          sections.forEach(function(s) { if (s.getBoundingClientRect().top <= 120) currentId = s.id; });
+          navAnchors.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + currentId); });
+        }, { passive: true });
+
+        // ── Fade-in observer ────────────────────
+        const fadeObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) { entry.target.classList.add('visible'); fadeObserver.unobserve(entry.target); }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.fade-in').forEach(function(el) { fadeObserver.observe(el); });
+
+        // ── Smooth anchor scroll ────────────────
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+          anchor.addEventListener('click', function(e) {
+            const id = this.getAttribute('href');
+            if (id === '#') return;
+            const target = document.querySelector(id);
+            if (target) {
+              e.preventDefault();
+              const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10) || 68;
+              window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - navH, behavior: 'smooth' });
+            }
+          });
+        });
+
+        console.log(C.名字 + ' 摄影作品集已就绪！共 ' + allCardsData.length + ' 张作品，6 个分类。');
+      });
+    })();
+  </script>
+</body>
+</html>
